@@ -5,35 +5,49 @@ public class IkanSpawner : MonoBehaviour
 {
     public GameObject[] semuaJenisIkan;     // Semua prefab ikan
     public Transform[] spawnPoints;         // Lokasi tetap
+    public bool adaIkanIllegal = false;     // Apakah ada ikan ilegal di stage ini
+
+    public string[] namaIkanIllegal = { "sardine", "avoli" };
 
     void Start()
     {
         SpawnIkanRandomDiSpawnPointTetap();
     }
 
-    void SpawnIkanRandomDiSpawnPointTetap()
+    public void SpawnIkanRandomDiSpawnPointTetap()
     {
+        adaIkanIllegal = false;
+
         foreach (Transform spawnPoint in spawnPoints)
         {
             int randomIndex = Random.Range(0, semuaJenisIkan.Length);
             GameObject ikanDipilih = semuaJenisIkan[randomIndex];
 
             GameObject ikanInstance = Instantiate(ikanDipilih, spawnPoint.position, spawnPoint.rotation);
-            //ikanInstance.transform.localScale = Vector3.one * 0.1f;
+            ikanInstance.transform.parent = transform; // supaya bisa dihapus bareng saat respawn
 
+            // Nonaktifkan kamera dari prefab (jika ada)
             Camera[] cameras = ikanInstance.GetComponentsInChildren<Camera>(true);
             foreach (Camera cam in cameras)
-            {
                 cam.enabled = false;
-            }
 
-            Transform ikanTransform = ikanInstance.transform;
-            if (ikanInstance.name.Contains("sardine") || ikanInstance.name.Contains("avoli 1"))
+            // Koreksi rotasi
+            if (ikanInstance.name.ToLower().Contains("sardine") || ikanInstance.name.ToLower().Contains("avoli"))
             {
-                ikanTransform.Rotate(new Vector3(90f, 0f, 0f)); // koreksi agar tidak berdiri
+                ikanInstance.transform.Rotate(new Vector3(90f, 0f, 0f));
             }
 
-            // Tambahkan Rigidbody jika belum ada
+            // Cek apakah ikan ini ilegal
+            foreach (string illegalName in namaIkanIllegal)
+            {
+                if (ikanInstance.name.ToLower().Contains(illegalName))
+                {
+                    adaIkanIllegal = true;
+                    break;
+                }
+            }
+
+            // Tambahkan komponen penting jika belum ada
             if (ikanInstance.GetComponent<Rigidbody>() == null)
             {
                 Rigidbody rb = ikanInstance.AddComponent<Rigidbody>();
@@ -42,17 +56,27 @@ public class IkanSpawner : MonoBehaviour
                 rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
             }
 
-            // Tambahkan Collider jika belum ada
             if (ikanInstance.GetComponent<Collider>() == null)
             {
-                ikanInstance.AddComponent<BoxCollider>(); // Bisa diganti SphereCollider/MeshCollider sesuai bentuk ikan
+                ikanInstance.AddComponent<BoxCollider>();
             }
 
-            // Tambahkan XRGrabInteractable jika belum ada
             if (ikanInstance.GetComponent<XRGrabInteractable>() == null)
             {
                 ikanInstance.AddComponent<XRGrabInteractable>();
             }
         }
+    }
+
+    public void RespawnUlang()
+    {
+        // Hapus semua ikan dari stage
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        adaIkanIllegal = false;
+        SpawnIkanRandomDiSpawnPointTetap();
     }
 }
