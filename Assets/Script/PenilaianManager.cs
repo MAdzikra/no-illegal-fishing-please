@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PenilaianManager : MonoBehaviour
 {
@@ -16,6 +17,11 @@ public class PenilaianManager : MonoBehaviour
     {
         submitButton.onClick.AddListener(OnSubmit);
         UpdateStageText();
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.attempt = 1;
+        }
     }
 
     void OnSubmit()
@@ -39,12 +45,28 @@ public class PenilaianManager : MonoBehaviour
                 float waktu = Object.FindAnyObjectByType<UITimer>()?.GetTimeInSeconds() ?? 0f;
 
                 Debug.Log("⏱️ Total waktu: " + waktu.ToString("F2") + " detik");
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.SetWaktu(waktu);
+                }
+
+                SceneManager.LoadScene("Result");
             }
         }
         else
         {
             currentStage = 1;
             Debug.Log("❌ Salah. Kembali ke Stage 1");
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.TambahAttempt();
+                Debug.Log("❌ Salah. Attempt ke: " + GameManager.Instance.attempt);
+            }
+            else
+            {
+                Debug.Log("❌ Salah. GameManager tidak ditemukan.");
+            }
+
             ResetStage();
         }
     }

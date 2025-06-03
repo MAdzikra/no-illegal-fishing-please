@@ -5,7 +5,7 @@ using TMPro;
 
 public class UITimer : MonoBehaviour
 {
-    public TMP_Text timerText;       // Drag dari UI Text (Legacy) atau TMP
+    public TMP_Text timerText;
     private float elapsedTime = 0f;
     private bool isRunning = true;
 
@@ -29,6 +29,13 @@ public class UITimer : MonoBehaviour
     {
         isRunning = false;
     }
+
+    public void StopAndSaveTimer()
+    {
+        isRunning = false;
+        GameManager.Instance.waktu = elapsedTime;
+    }
+
 
     public void ResetTimer()
     {
