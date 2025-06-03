@@ -5,6 +5,7 @@ public class FishermanInteraction : MonoBehaviour
     public GameObject dialogPanel;
     public GameObject fishingPermit;
     public GameObject fishingGearCabinet;
+    public GameObject evaluationPaper;
 
     private bool playerNearby = false;
 
@@ -19,8 +20,8 @@ public class FishermanInteraction : MonoBehaviour
     private void ShowDialog()
     {
         dialogPanel.SetActive(true);
-        // Simulasi pemberian surat izin
         fishingPermit.SetActive(true);
+        evaluationPaper.SetActive(true); // Kertas penilaian muncul
     }
 
     private void OnTriggerEnter(Collider other)
