@@ -63,7 +63,15 @@ public class IkanSpawner : MonoBehaviour
 
             if (ikanInstance.GetComponent<XRGrabInteractable>() == null)
             {
-                ikanInstance.AddComponent<XRGrabInteractable>();
+                var grab = ikanInstance.AddComponent<XRGrabInteractable>();
+
+                // Buat attach transform di tengah ikan
+                GameObject attachPoint = new GameObject("AttachPoint");
+                attachPoint.transform.SetParent(ikanInstance.transform);
+                attachPoint.transform.localPosition = Vector3.zero;
+                grab.attachTransform = attachPoint.transform;
+                grab.farAttachMode = UnityEngine.XR.Interaction.Toolkit.Attachment.InteractableFarAttachMode.Near;
+
             }
         }
     }
