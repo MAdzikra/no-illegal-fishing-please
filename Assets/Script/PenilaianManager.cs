@@ -9,6 +9,8 @@ public class PenilaianManager : MonoBehaviour
     public Button submitButton;
     public TMP_Text stageText;
     public IkanSpawner ikanSpawner;
+    public FishermanInteraction nelayan;
+
 
     private int currentStage = 1;
     private const int maxStage = 5;
@@ -75,6 +77,7 @@ public class PenilaianManager : MonoBehaviour
     {
         toggleIkanIllegal.isOn = false;
         ikanSpawner.RespawnUlang();
+        nelayan.ResetInteraction();
         UpdateStageText();
     }
 
