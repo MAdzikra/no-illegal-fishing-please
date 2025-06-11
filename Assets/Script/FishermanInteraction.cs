@@ -2,37 +2,35 @@ using UnityEngine;
 
 public class FishermanInteraction : MonoBehaviour
 {
-    public GameObject dialogPanel;
-    public GameObject fishingPermit;
-    public GameObject fishingGearCabinet;
-    public GameObject evaluationPaper;
+    public DialogManager dialogManager; // Assign via inspector atau dari GameManager
+    private bool hasPermit;
+    private bool alreadyClicked = false;
 
-    private bool playerNearby = false;
-
-    void Update()
+    void Start()
     {
-        if (playerNearby && Input.GetKeyDown(KeyCode.E))
-        {
-            ShowDialog();
-        }
+        RandomizePermit();
     }
 
-    private void ShowDialog()
+    void OnMouseDown()
     {
-        dialogPanel.SetActive(true);
-        fishingPermit.SetActive(true);
-        evaluationPaper.SetActive(true); // Kertas penilaian muncul
+        if (alreadyClicked) return;
+
+        alreadyClicked = true;
+
+        if (hasPermit)
+            dialogManager.ShowDialog("Nelayan: Saya punya surat izin.");
+        else
+            dialogManager.ShowDialog("Nelayan: Maaf, saya tidak punya surat izin.");
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void ResetInteraction()
     {
-        if (other.CompareTag("Player"))
-            playerNearby = true;
+        alreadyClicked = false;
+        RandomizePermit();
     }
 
-    private void OnTriggerExit(Collider other)
+    void RandomizePermit()
     {
-        if (other.CompareTag("Player"))
-            playerNearby = false;
+        hasPermit = Random.value > 0.5f; // true/false secara acak
     }
 }
