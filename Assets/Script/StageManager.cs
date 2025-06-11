@@ -19,13 +19,13 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    void GoToNextStage()
+    public void GoToNextStage()
     {
         Debug.Log("Lanjut ke kapal berikutnya...");
         // Ganti scene atau atur ulang objek untuk stage selanjutnya
     }
 
-    void RestartFromBeginning()
+    public void RestartFromBeginning()
     {
         Debug.Log("Inspeksi gagal, kembali ke stage 1.");
         // Load ulang dari stage 1
