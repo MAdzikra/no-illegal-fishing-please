@@ -1,36 +1,58 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FishermanInteraction : MonoBehaviour
 {
-    public DialogManager dialogManager; // Assign via inspector atau dari GameManager
+    public DialogManager dialogManager; // Drag dari scene
+    public Transform playerHead;        // Drag XR camera (biasanya Main Camera)
+
     private bool hasPermit;
     private bool alreadyClicked = false;
 
     void Start()
     {
         RandomizePermit();
+        Debug.Log("[Nelayan] Surat izin diacak: " + (hasPermit ? "✅ Punya" : "❌ Tidak punya"));
     }
 
-    void OnMouseDown()
+    public void Interact()
     {
-        if (alreadyClicked) return;
+        Debug.Log("[Nelayan] Interact dipanggil.");
+
+        if (alreadyClicked)
+        {
+            Debug.Log("[Nelayan] Sudah diklik sebelumnya, abaikan.");
+            return;
+        }
 
         alreadyClicked = true;
 
+        string message;
         if (hasPermit)
-            dialogManager.ShowDialog("Nelayan: Saya punya surat izin.");
+        {
+            message = "Nelayan: Saya punya surat izin.";
+            Debug.Log("[Nelayan] Status: ✅ Punya surat izin.");
+        }
         else
-            dialogManager.ShowDialog("Nelayan: Maaf, saya tidak punya surat izin.");
+        {
+            message = "Nelayan: Maaf, saya tidak punya surat izin.";
+            Debug.Log("[Nelayan] Status: ❌ Tidak punya surat izin.");
+        }
+
+        dialogManager.ShowDialog(message, playerHead);
     }
 
     public void ResetInteraction()
     {
         alreadyClicked = false;
         RandomizePermit();
+        Debug.Log("[Nelayan] Reset: Status klik direset. Surat izin: " + (hasPermit ? "✅ Punya" : "❌ Tidak punya"));
     }
 
     void RandomizePermit()
     {
-        hasPermit = Random.value > 0.5f; // true/false secara acak
+        hasPermit = Random.value > 0.5f;
     }
+
+    public bool HasPermit() => hasPermit;
+    public bool AlreadyClicked() => alreadyClicked;
 }

@@ -6,11 +6,13 @@ using UnityEngine.SceneManagement;
 public class PenilaianManager : MonoBehaviour
 {
     public Toggle toggleIkanIllegal;
+    public Toggle togglePeralatanIllegal;
     public Button submitButton;
     public TMP_Text stageText;
-    public IkanSpawner ikanSpawner;
-    public FishermanInteraction nelayan;
 
+    public IkanSpawner ikanSpawner;
+    public PeralatanSpawner peralatanSpawner;
+    public FishermanInteraction nelayan;
 
     private int currentStage = 1;
     private const int maxStage = 5;
@@ -28,12 +30,16 @@ public class PenilaianManager : MonoBehaviour
 
     void OnSubmit()
     {
-        bool toggleAktif = toggleIkanIllegal.isOn;
+        bool toggleIkan = toggleIkanIllegal.isOn;
+        bool togglePeralatan = togglePeralatanIllegal.isOn;
+
         bool adaIkanIllegal = ikanSpawner.adaIkanIllegal;
+        bool adaPeralatanIllegal = peralatanSpawner.adaPeralatanIllegal;
 
-        bool jawabanBenar = (adaIkanIllegal && toggleAktif) || (!adaIkanIllegal && !toggleAktif);
+        bool jawabanIkanBenar = (adaIkanIllegal && toggleIkan) || (!adaIkanIllegal && !toggleIkan);
+        bool jawabanPeralatanBenar = (adaPeralatanIllegal && togglePeralatan) || (!adaPeralatanIllegal && !togglePeralatan);
 
-        if (jawabanBenar)
+        if (jawabanIkanBenar && jawabanPeralatanBenar)
         {
             if (currentStage < maxStage)
             {
@@ -59,14 +65,11 @@ public class PenilaianManager : MonoBehaviour
         {
             currentStage = 1;
             Debug.Log("❌ Salah. Kembali ke Stage 1");
+
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.TambahAttempt();
-                Debug.Log("❌ Salah. Attempt ke: " + GameManager.Instance.attempt);
-            }
-            else
-            {
-                Debug.Log("❌ Salah. GameManager tidak ditemukan.");
+                Debug.Log("❌ Attempt ke: " + GameManager.Instance.attempt);
             }
 
             ResetStage();
@@ -76,8 +79,12 @@ public class PenilaianManager : MonoBehaviour
     void ResetStage()
     {
         toggleIkanIllegal.isOn = false;
+        togglePeralatanIllegal.isOn = false;
+
         ikanSpawner.RespawnUlang();
+        peralatanSpawner.ResetPeralatan();
         nelayan.ResetInteraction();
+
         UpdateStageText();
     }
 
