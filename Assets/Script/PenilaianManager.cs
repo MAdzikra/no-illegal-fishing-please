@@ -7,10 +7,13 @@ public class PenilaianManager : MonoBehaviour
 {
     public Toggle toggleIkanIllegal;
     public Toggle togglePeralatanIllegal;
+    public Toggle toggleSuratIzin;
+    public DialogManager dialogManager;
     public Button submitButton;
     public TMP_Text stageText;
 
     public IkanSpawner ikanSpawner;
+    public TongSpawner[] tongSpawner;
     public PeralatanSpawner peralatanSpawner;
     public FishermanInteraction nelayan;
 
@@ -32,14 +35,41 @@ public class PenilaianManager : MonoBehaviour
     {
         bool toggleIkan = toggleIkanIllegal.isOn;
         bool togglePeralatan = togglePeralatanIllegal.isOn;
+        bool toggleSurat = toggleSuratIzin.isOn;
 
         bool adaIkanIllegal = ikanSpawner.adaIkanIllegal;
+        foreach (TongSpawner tong in tongSpawner)
+        {
+            if (tong.adaIkanIllegal)
+            {
+                adaIkanIllegal = true;
+                break;
+            }
+        }
         bool adaPeralatanIllegal = peralatanSpawner.adaPeralatanIllegal;
+        bool nelayanPunyaSurat = nelayan.HasPermit();
 
         bool jawabanIkanBenar = (adaIkanIllegal && toggleIkan) || (!adaIkanIllegal && !toggleIkan);
         bool jawabanPeralatanBenar = (adaPeralatanIllegal && togglePeralatan) || (!adaPeralatanIllegal && !togglePeralatan);
+        bool jawabanSuratBenar = (nelayanPunyaSurat && toggleSurat) || (!nelayanPunyaSurat && !toggleSurat);
 
-        if (jawabanIkanBenar && jawabanPeralatanBenar)
+        if (!nelayan.AlreadyClicked())
+        {
+            Debug.Log("❗ Harus tanya ke nelayan dulu sebelum submit.");
+            return;
+        }
+
+        foreach (TongSpawner tong in tongSpawner)
+        {
+            if (!tong.sudahSelesai)
+            {
+                Debug.Log("❗ Semua tong harus selesai (ikan sudah digrab semua).");
+                return;
+            }
+        }
+
+
+        if (jawabanIkanBenar && jawabanPeralatanBenar && jawabanSuratBenar)
         {
             if (currentStage < maxStage)
             {
@@ -80,10 +110,17 @@ public class PenilaianManager : MonoBehaviour
     {
         toggleIkanIllegal.isOn = false;
         togglePeralatanIllegal.isOn = false;
+        toggleSuratIzin.isOn = false;
 
         ikanSpawner.RespawnUlang();
         peralatanSpawner.ResetPeralatan();
         nelayan.ResetInteraction();
+        dialogManager.HideDialog();
+        foreach (TongSpawner tong in tongSpawner)
+        {
+            tong.ResetSpawn();
+        }
+
 
         UpdateStageText();
     }
