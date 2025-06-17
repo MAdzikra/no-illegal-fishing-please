@@ -14,7 +14,7 @@ public class TongSpawner : MonoBehaviour
     public bool adaIkanIllegal = false;
 
     private List<GameObject> ikanSpawned = new List<GameObject>();
-    public bool sudahSelesai => currentSpawn >= maxSpawn && SemuaIkanSudahDiambil();
+    public bool sudahSelesai => currentSpawn >= maxSpawn;
 
 
     public void OnTongSelected(SelectEnterEventArgs args)

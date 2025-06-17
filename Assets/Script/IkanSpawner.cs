@@ -56,10 +56,41 @@ public class IkanSpawner : MonoBehaviour
                 rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
             }
 
-            if (ikanInstance.GetComponent<Collider>() == null)
+            //if (ikanInstance.GetComponent<Collider>() == null)
+            //{
+            //    MeshCollider ikanCollider = ikanInstance.AddComponent<MeshCollider>();
+            //    ikanCollider.convex = true;
+            //}
+
+            // Tambahkan MeshCollider ke setiap child yang punya MeshRenderer/MeshFilter
+            if ((ikanInstance.GetComponent<MeshFilter>() != null || ikanInstance.GetComponent<SkinnedMeshRenderer>() != null)
+                && ikanInstance.GetComponent<MeshCollider>() == null)
             {
-                ikanInstance.AddComponent<BoxCollider>();
+                MeshCollider mc = ikanInstance.AddComponent<MeshCollider>();
+                mc.convex = true;
             }
+
+            // Tambahkan MeshCollider ke setiap child yang punya MeshRenderer/MeshFilter
+            foreach (Transform child in ikanInstance.transform)
+            {
+                if (child.GetComponent<SkinnedMeshRenderer>() != null)
+                {
+                    // Tambahkan collider sederhana agar tidak tembus
+                    if (child.GetComponent<CapsuleCollider>() == null)
+                    {
+                        CapsuleCollider cc = ikanInstance.AddComponent<CapsuleCollider>();
+                        cc.center = Vector3.zero;
+                    }
+                }
+                else if (child.GetComponent<MeshFilter>() != null && child.GetComponent<MeshCollider>() == null)
+                {
+                    // MeshFilter boleh pakai MeshCollider convex
+                    MeshCollider mc = child.gameObject.AddComponent<MeshCollider>();
+                    mc.convex = true;
+                }
+            }
+
+
 
             if (ikanInstance.GetComponent<XRGrabInteractable>() == null)
             {
