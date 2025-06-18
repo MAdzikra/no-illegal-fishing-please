@@ -16,6 +16,7 @@ public class PenilaianManager : MonoBehaviour
     public TongSpawner[] tongSpawner;
     public PeralatanSpawner peralatanSpawner;
     public FishermanInteraction nelayan;
+    public TeleportToSpawn tele;
 
     private int currentStage = 1;
     private const int maxStage = 5;
@@ -121,7 +122,7 @@ public class PenilaianManager : MonoBehaviour
             tong.ResetSpawn();
         }
 
-
+        tele.TeleportXR();
         UpdateStageText();
     }
 
