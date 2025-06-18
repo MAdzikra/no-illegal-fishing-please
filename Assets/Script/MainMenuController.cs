@@ -12,7 +12,7 @@ public class MainMenuController : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene("Ingame");
+        SceneManager.LoadScene("Template Scene");
     }
 
     public void QuitGame()

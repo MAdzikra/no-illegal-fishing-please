@@ -1,7 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+﻿using TMPro;
+using Unity.XR.CoreUtils;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class PenilaianManager : MonoBehaviour
 {
@@ -11,11 +13,15 @@ public class PenilaianManager : MonoBehaviour
     public DialogManager dialogManager;
     public Button submitButton;
     public TMP_Text stageText;
+    public StageManager teleport;
 
     public IkanSpawner ikanSpawner;
     public TongSpawner[] tongSpawner;
     public PeralatanSpawner peralatanSpawner;
     public FishermanInteraction nelayan;
+
+    //public Transform spawnPoint;            // ⬅️ Tambahan: titik teleportasi
+    //public XROrigin xrOrigin;               // ⬅️ Tambahan: referensi XR Origin
 
     private int currentStage = 1;
     private const int maxStage = 5;
@@ -68,7 +74,6 @@ public class PenilaianManager : MonoBehaviour
             }
         }
 
-
         if (jawabanIkanBenar && jawabanPeralatanBenar && jawabanSuratBenar)
         {
             if (currentStage < maxStage)
@@ -116,13 +121,19 @@ public class PenilaianManager : MonoBehaviour
         peralatanSpawner.ResetPeralatan();
         nelayan.ResetInteraction();
         dialogManager.HideDialog();
+
         foreach (TongSpawner tong in tongSpawner)
         {
             tong.ResetSpawn();
         }
 
-
         UpdateStageText();
+        teleport.OnSubmitStage();
+        // 🔄 Teleport player ke spawn point
+        //if (xrOrigin != null && spawnPoint != null)
+        //{
+        //    xrOrigin.MoveCameraToWorldLocation(spawnPoint.position);
+        //}
     }
 
     void UpdateStageText()

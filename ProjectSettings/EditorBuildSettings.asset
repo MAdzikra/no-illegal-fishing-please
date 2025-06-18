@@ -27,6 +27,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Ingame.unity
     guid: 64895f7ddb6721442a16808fc9246f9a
   - enabled: 1
+    path: Assets/Scenes/Template Scene.unity
+    guid: 2bf66bbeea6a5d04abfda73530f3ad07
+  - enabled: 1
     path: Assets/Scenes/Result.unity
     guid: 5f4d532bcd32ea842a0ee3a82ac370b1
   m_configObjects:
