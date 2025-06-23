@@ -4,14 +4,11 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class StageManager : MonoBehaviour
 {
-    public Transform spawnPoint;           // Titik spawn awal
-    public GameObject playerRig;           // XR Origin / Player XR Rig (biasanya XR Origin atau XRRig)
+    public Transform spawnPoint;   // Titik spawn yang diinginkan
+    public GameObject playerRig;   // XR Origin (biasanya GameObject utama dari XR rig)
 
     public void OnSubmitStage()
     {
-        // Kalau ada logika lain untuk pindah stage, taruh di sini
-
-        // Teleport player ke spawn point awal
         TeleportToSpawn();
     }
 
@@ -19,7 +16,7 @@ public class StageManager : MonoBehaviour
     {
         if (playerRig == null || spawnPoint == null) return;
 
-        // Ambil kamera dari XR Origin
+        // Ambil kamera utama dari XR Origin
         Camera cam = playerRig.GetComponentInChildren<Camera>();
         if (cam == null)
         {
@@ -27,15 +24,19 @@ public class StageManager : MonoBehaviour
             return;
         }
 
-        // Hitung delta rotasi yaw (Y axis)
+        // Hitung offset posisi kamera relatif terhadap XR Origin
+        Vector3 cameraOffset = cam.transform.position - playerRig.transform.position;
+
+        // Koreksi posisi XR Origin agar kamera berada tepat di posisi spawnPoint
+        Vector3 correctedPosition = spawnPoint.position - new Vector3(cameraOffset.x, 0, cameraOffset.z);
+        playerRig.transform.position = correctedPosition;
+
+        // Hitung delta rotasi yaw (sumbu Y)
         float currentYaw = cam.transform.eulerAngles.y;
         float targetYaw = spawnPoint.eulerAngles.y;
         float deltaYaw = targetYaw - currentYaw;
 
-        // Putar XR Origin pada Y axis untuk menyamakan arah hadap
+        // Putar XR Origin agar kamera menghadap sesuai rotasi spawnPoint
         playerRig.transform.Rotate(0, deltaYaw, 0);
-
-        // Pindahkan ke posisi spawn
-        playerRig.transform.position = spawnPoint.position;
     }
 }

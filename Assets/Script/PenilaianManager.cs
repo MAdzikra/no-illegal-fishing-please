@@ -15,7 +15,7 @@ public class PenilaianManager : MonoBehaviour
     public TMP_Text stageText;
     public StageManager teleport;
 
-    public IkanSpawner ikanSpawner;
+    //public IkanSpawner ikanSpawner;
     public TongSpawner[] tongSpawner;
     public PeralatanSpawner peralatanSpawner;
     public FishermanInteraction nelayan;
@@ -43,7 +43,7 @@ public class PenilaianManager : MonoBehaviour
         bool togglePeralatan = togglePeralatanIllegal.isOn;
         bool toggleSurat = toggleSuratIzin.isOn;
 
-        bool adaIkanIllegal = ikanSpawner.adaIkanIllegal;
+        bool adaIkanIllegal = true;
         foreach (TongSpawner tong in tongSpawner)
         {
             if (tong.adaIkanIllegal)
@@ -59,20 +59,8 @@ public class PenilaianManager : MonoBehaviour
         bool jawabanPeralatanBenar = (adaPeralatanIllegal && togglePeralatan) || (!adaPeralatanIllegal && !togglePeralatan);
         bool jawabanSuratBenar = (nelayanPunyaSurat && toggleSurat) || (!nelayanPunyaSurat && !toggleSurat);
 
-        if (!nelayan.AlreadyClicked())
-        {
-            Debug.Log("❗ Harus tanya ke nelayan dulu sebelum submit.");
-            return;
-        }
 
-        foreach (TongSpawner tong in tongSpawner)
-        {
-            if (!tong.sudahSelesai)
-            {
-                Debug.Log("❗ Semua tong harus selesai (ikan sudah digrab semua).");
-                return;
-            }
-        }
+
 
         if (jawabanIkanBenar && jawabanPeralatanBenar && jawabanSuratBenar)
         {
@@ -117,7 +105,7 @@ public class PenilaianManager : MonoBehaviour
         togglePeralatanIllegal.isOn = false;
         toggleSuratIzin.isOn = false;
 
-        ikanSpawner.RespawnUlang();
+        //ikanSpawner.RespawnUlang();
         peralatanSpawner.ResetPeralatan();
         nelayan.ResetInteraction();
         dialogManager.HideDialog();

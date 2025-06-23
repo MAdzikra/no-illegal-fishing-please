@@ -2,16 +2,25 @@ using UnityEngine;
 
 public class LookAtPlayer : MonoBehaviour
 {
-    public Transform player;
+    private Transform playerHead;
+
+    void Start()
+    {
+        playerHead = Camera.main.transform;
+    }
 
     void Update()
     {
-        if (player != null)
+        if (playerHead != null)
         {
-            Vector3 lookPos = player.position - transform.position;
-            lookPos.y = 0;
-            Quaternion rotation = Quaternion.LookRotation(lookPos);
-            transform.rotation = rotation;
+            Vector3 direction = playerHead.position - transform.position;
+            direction.y = 0f;
+
+            if (direction != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+            }
         }
     }
 }
